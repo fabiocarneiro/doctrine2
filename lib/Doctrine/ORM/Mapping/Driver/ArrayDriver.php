@@ -83,9 +83,6 @@ class ArrayDriver extends FileDriver
         // Evaluate changeTrackingPolicy
         $this->evaluateTrackingPolicy($element, $metadata);
 
-        // Evaluate indexes
-        $this->evaluateIndexes($element, $metadata);
-
         // Evaluate uniqueConstraints
         $this->evaluateUniqueConstraints($element, $metadata);
 
@@ -425,48 +422,6 @@ class ArrayDriver extends FileDriver
                 . strtoupper($element['changeTrackingPolicy'])
             )
         );
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateIndexes(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['indexes'])) {
-            return;
-        }
-
-        foreach ($element['indexes'] as $name => $indexYml) {
-            if ( ! isset($indexYml['name'])) {
-                $indexYml['name'] = $name;
-            }
-            if (is_string($indexYml['columns'])) {
-                $index = [
-                    'columns' => array_map(
-                        'trim',
-                        explode(',', $indexYml['columns'])
-                    )
-                ];
-            } else {
-                $index = ['columns' => $indexYml['columns']];
-            }
-            if (isset($indexYml['flags'])) {
-                if (is_string($indexYml['flags'])) {
-                    $index['flags'] =
-                        array_map('trim', explode(',', $indexYml['flags']));
-                } else {
-                    $index['flags'] = $indexYml['flags'];
-                }
-            }
-            if (isset($indexYml['options'])) {
-                $index['options'] = $indexYml['options'];
-            }
-            $metadata->table['indexes'][$indexYml['name']] = $index;
-        }
     }
 
     /**
