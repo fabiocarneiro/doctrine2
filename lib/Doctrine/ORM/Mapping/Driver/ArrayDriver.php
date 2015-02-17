@@ -23,7 +23,8 @@ class ArrayDriver extends FileDriver
      * @var array
      */
     private $evaluators = [
-        'Doctrine\ORM\Mapping\Driver\Evaluator\FieldsEvaluator'
+        'Doctrine\ORM\Mapping\Driver\Evaluator\FieldsEvaluator',
+        'Doctrine\ORM\Mapping\Driver\Evaluator\SecondLevelCacheEvaluator'
     ];
 
     /**
@@ -66,9 +67,6 @@ class ArrayDriver extends FileDriver
 
         // Evaluate root level properties
         $this->evaluateRootLevelProperties($element, $metadata);
-
-        // Evaluate second level cache
-        $this->evaluateSecondLevelCache($element, $metadata);
 
         // Evaluate named queries
         $this->evaluateNamedQueries($element, $metadata);
@@ -193,22 +191,6 @@ class ArrayDriver extends FileDriver
             $primaryTable['schema'] = $element['schema'];
         }
         $metadata->setPrimaryTable($primaryTable);
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateSecondLevelCache(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['cache'])) {
-            return;
-        }
-
-        $metadata->enableCache($this->cacheToArray($element['cache']));
     }
 
     /**
