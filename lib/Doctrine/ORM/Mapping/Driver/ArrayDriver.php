@@ -20,6 +20,13 @@ class ArrayDriver extends FileDriver
     protected $metadata;
 
     /**
+     * @var array
+     */
+    private $evaluators = [
+        'Doctrine\ORM\Mapping\Driver\Evaluator\FieldsEvaluator'
+    ];
+
+    /**
      * {@inheritDoc}
      */
     public function __construct(
@@ -47,6 +54,11 @@ class ArrayDriver extends FileDriver
 
         if ( ! isset($element['type'])) {
             throw MappingException::invalidMapping('type');
+        }
+
+        foreach($this->evaluators as $evaluatorClassName) {
+            $evaluator = new $evaluatorClassName;
+            $evaluator->evaluate($element, $metadata);
         }
 
         // Evaluate model type
@@ -85,9 +97,6 @@ class ArrayDriver extends FileDriver
         }
 
         $this->evaluateAssociations($element, $metadata, $className);
-
-        // Evaluate fields
-        $this->evaluateFields($element, $metadata);
 
         // Evaluate embeddeds
         $this->evaluateEmbeddeds($element, $metadata);
@@ -591,42 +600,6 @@ class ArrayDriver extends FileDriver
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateFields(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['fields'])) {
-            return;
-        }
-
-        foreach ($element['fields'] as $name => $fieldMapping) {
-            $mapping = $this->columnToArray($name, $fieldMapping);
-            if (isset($fieldMapping['id'])) {
-                $mapping['id'] = true;
-                if (isset($fieldMapping['generator']['strategy'])) {
-                    $metadata->setIdGeneratorType(
-                        constant(
-                            'Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_'
-                            . strtoupper(
-                                $fieldMapping['generator']['strategy']
-                            )
-                        )
-                    );
-                }
-            }
-            if (isset($mapping['version'])) {
-                $metadata->setVersionMapping($mapping);
-                unset($mapping['version']);
-            }
-            $metadata->mapField($mapping);
         }
     }
 
