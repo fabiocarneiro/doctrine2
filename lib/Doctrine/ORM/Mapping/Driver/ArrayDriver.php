@@ -20,13 +20,13 @@ class ArrayDriver extends FileDriver
     protected $metadata;
 
     /**
-     * @var array
+     * @var EvaluatorInterface[]
      */
     private $evaluators;
 
     /**
      * {@inheritDoc}
-     * @param array $evaluators
+     * @param EvaluatorInterface[] $evaluators
      */
     public function __construct(
         $locator,
