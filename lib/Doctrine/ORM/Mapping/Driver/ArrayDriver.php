@@ -68,9 +68,6 @@ class ArrayDriver extends FileDriver
         // Evaluate root level properties
         $this->evaluateRootLevelProperties($element, $metadata);
 
-        // Evaluate named queries
-        $this->evaluateNamedQueries($element, $metadata);
-
         // Evaluate named native queries
         $this->evaluateNamedNativeQueries($element, $metadata);
 
@@ -188,30 +185,6 @@ class ArrayDriver extends FileDriver
             $primaryTable['schema'] = $element['schema'];
         }
         $metadata->setPrimaryTable($primaryTable);
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateNamedQueries(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['namedQueries'])) {
-            return;
-        }
-
-        foreach ($element['namedQueries'] as $name => $queryMapping) {
-            if (is_string($queryMapping)) {
-                $queryMapping = ['query' => $queryMapping];
-            }
-            if ( ! isset($queryMapping['name'])) {
-                $queryMapping['name'] = $name;
-            }
-            $metadata->addNamedQuery($queryMapping);
-        }
     }
 
     /**
