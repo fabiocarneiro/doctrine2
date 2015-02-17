@@ -22,18 +22,18 @@ class ArrayDriver extends FileDriver
     /**
      * @var array
      */
-    private $evaluators = [
-        'Doctrine\ORM\Mapping\Driver\Evaluator\FieldsEvaluator',
-        'Doctrine\ORM\Mapping\Driver\Evaluator\SecondLevelCacheEvaluator'
-    ];
+    private $evaluators;
 
     /**
      * {@inheritDoc}
+     * @param array $evaluators
      */
     public function __construct(
         $locator,
-        $fileExtension = self::DEFAULT_FILE_EXTENSION
+        $fileExtension = self::DEFAULT_FILE_EXTENSION,
+        array $evaluators
     ) {
+        $this->evaluators = $evaluators;
         parent::__construct($locator, $fileExtension);
     }
 
@@ -57,7 +57,7 @@ class ArrayDriver extends FileDriver
             throw MappingException::invalidMapping('type');
         }
 
-        foreach($this->evaluators as $evaluatorClassName) {
+        foreach ($this->evaluators as $evaluatorClassName) {
             $evaluator = new $evaluatorClassName;
             $evaluator->evaluate($element, $metadata);
         }
