@@ -90,9 +90,6 @@ class ArrayDriver extends FileDriver
         // Evaluate oneToOne relationships
         $this->evaluateOneToOne($element, $metadata);
 
-        // Evaluate oneToMany relationships
-        $this->evaluateOneToMany($element, $metadata);
-
         // Evaluate manyToOne relationships
         $this->evaluateManyToOne($element, $metadata);
 
@@ -502,56 +499,6 @@ class ArrayDriver extends FileDriver
                 $metadata->enableAssociationCache(
                     $mapping['fieldName'],
                     $this->cacheToArray($oneToOneElement['cache'])
-                );
-            }
-        }
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateOneToMany(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['oneToMany'])) {
-            return;
-        }
-
-        foreach ($element['oneToMany'] as $name => $oneToManyElement) {
-            $mapping = [
-                'fieldName' => $name,
-                'targetEntity' => $oneToManyElement['targetEntity'],
-                'mappedBy' => $oneToManyElement['mappedBy']
-            ];
-            if (isset($oneToManyElement['fetch'])) {
-                $mapping['fetch'] =
-                    constant(
-                        'Doctrine\ORM\Mapping\ClassMetadata::FETCH_'
-                        . $oneToManyElement['fetch']
-                    );
-            }
-            if (isset($oneToManyElement['cascade'])) {
-                $mapping['cascade'] = $oneToManyElement['cascade'];
-            }
-            if (isset($oneToManyElement['orphanRemoval'])) {
-                $mapping['orphanRemoval'] =
-                    (bool)$oneToManyElement['orphanRemoval'];
-            }
-            if (isset($oneToManyElement['orderBy'])) {
-                $mapping['orderBy'] = $oneToManyElement['orderBy'];
-            }
-            if (isset($oneToManyElement['indexBy'])) {
-                $mapping['indexBy'] = $oneToManyElement['indexBy'];
-            }
-            $metadata->mapOneToMany($mapping);
-            // Evaluate second level cache
-            if (isset($oneToManyElement['cache'])) {
-                $metadata->enableAssociationCache(
-                    $mapping['fieldName'],
-                    $this->cacheToArray($oneToManyElement['cache'])
                 );
             }
         }
