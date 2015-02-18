@@ -76,10 +76,7 @@ class ArrayDriver extends FileDriver
         }
 
         $this->evaluateAssociations($element, $metadata, $className);
-
-        // Evaluate embeddeds
-        $this->evaluateEmbeddeds($element, $metadata);
-
+        
         // Evaluate oneToOne relationships
         $this->evaluateOneToOne($element, $metadata);
 
@@ -336,30 +333,6 @@ class ArrayDriver extends FileDriver
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateEmbeddeds(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['embedded'])) {
-            return;
-        }
-
-        foreach ($element['embedded'] as $name => $embeddedMapping) {
-            $mapping = [
-                'fieldName' => $name,
-                'class' => $embeddedMapping['class'],
-                'columnPrefix' => isset($embeddedMapping['columnPrefix'])
-                    ? $embeddedMapping['columnPrefix'] : null,
-            ];
-            $metadata->mapEmbedded($mapping);
         }
     }
 
