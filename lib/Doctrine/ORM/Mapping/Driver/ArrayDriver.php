@@ -68,9 +68,6 @@ class ArrayDriver extends FileDriver
         // Evaluate root level properties
         $this->evaluateRootLevelProperties($element, $metadata);
 
-        // Evaluate named native queries
-        $this->evaluateNamedNativeQueries($element, $metadata);
-
         // Evaluate sql result set mappings
         $this->evaluateSqlResultSetMappings($element, $metadata);
 
@@ -182,51 +179,6 @@ class ArrayDriver extends FileDriver
             $primaryTable['schema'] = $element['schema'];
         }
         $metadata->setPrimaryTable($primaryTable);
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateNamedNativeQueries(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['namedNativeQueries'])) {
-            return;
-        }
-
-        foreach ($element['namedNativeQueries'] as $name => $mappingElement) {
-            if ( ! isset($mappingElement['name'])) {
-                $mappingElement['name'] = $name;
-            }
-
-            $query            = null;
-            $resultClass      = null;
-            $resultSetMapping = null;
-
-            if (isset($mappingElement['query'])) {
-                $query = $mappingElement['query'];
-            }
-
-            if (isset($mappingElement['resultClass'])) {
-                $resultClass = $mappingElement['resultClass'];
-            }
-
-            if (isset($mappingElement['resultSetMapping'])) {
-                $resultSetMapping = $mappingElement['resultSetMapping'];
-            }
-
-            $metadata->addNamedNativeQuery(
-                [
-                    'name' => $mappingElement['name'],
-                    'query' => $query,
-                    'resultClass' => $resultClass,
-                    'resultSetMapping' => $resultSetMapping,
-                ]
-            );
-        }
     }
 
     /**
