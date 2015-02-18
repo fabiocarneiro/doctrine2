@@ -71,10 +71,6 @@ class ArrayDriver extends FileDriver
         // Evaluate sql result set mappings
         $this->evaluateSqlResultSetMappings($element, $metadata);
 
-        // Evaluate uniqueConstraints
-        $this->evaluateUniqueConstraints($element, $metadata);
-
-
         if (isset($element['options'])) {
             $metadata->table['options'] = $element['options'];
         }
@@ -262,44 +258,6 @@ class ArrayDriver extends FileDriver
                     'columns' => $columns
                 ]
             );
-        }
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateUniqueConstraints(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['uniqueConstraints'])) {
-            return;
-        }
-
-        foreach ($element['uniqueConstraints'] as $name => $uniqueYml) {
-            if ( ! isset($uniqueYml['name'])) {
-                $uniqueYml['name'] = $name;
-            }
-
-            if (is_string($uniqueYml['columns'])) {
-                $unique = [
-                    'columns' => array_map(
-                        'trim',
-                        explode(',', $uniqueYml['columns'])
-                    )
-                ];
-            } else {
-                $unique = ['columns' => $uniqueYml['columns']];
-            }
-
-            if (isset($uniqueYml['options'])) {
-                $unique['options'] = $uniqueYml['options'];
-            }
-
-            $metadata->table['uniqueConstraints'][$uniqueYml['name']] =
-                $unique;
         }
     }
 
