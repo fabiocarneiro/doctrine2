@@ -4,6 +4,7 @@ namespace Doctrine\ORM\Mapping\Driver;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\Driver\FileDriver;
+use Doctrine\ORM\Mapping\Driver\Evaluator\EvaluatorInterface;
 use Doctrine\ORM\Mapping\MappingException;
 
 /**
@@ -57,8 +58,7 @@ class ArrayDriver extends FileDriver
             throw MappingException::invalidMapping('type');
         }
 
-        foreach ($this->evaluators as $evaluatorClassName) {
-            $evaluator = new $evaluatorClassName;
+        foreach ($this->evaluators as $evaluator) {
             $evaluator->evaluate($element, $metadata);
         }
 
