@@ -75,8 +75,6 @@ class ArrayDriver extends FileDriver
             $metadata->table['options'] = $element['options'];
         }
 
-        $this->evaluateAssociations($element, $metadata, $className);
-        
         // Evaluate oneToOne relationships
         $this->evaluateOneToOne($element, $metadata);
 
@@ -255,84 +253,6 @@ class ArrayDriver extends FileDriver
                     'columns' => $columns
                 ]
             );
-        }
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @param string        $className
-     * @throws MappingException
-     * @return void
-     */
-    private function evaluateAssociations(
-        array $element,
-        ClassMetadata $metadata,
-        $className
-    ) {
-        if ( ! isset($element['id'])) {
-            return;
-        }
-
-        $associationIds = [];
-        // Evaluate identifier settings
-        foreach ($element['id'] as $name => $idElement) {
-            if (isset($idElement['associationKey'])
-                && $idElement['associationKey'] == true
-            ) {
-                $associationIds[$name] = true;
-                continue;
-            }
-            $mapping = [
-                'id' => true,
-                'fieldName' => $name
-            ];
-            if (isset($idElement['type'])) {
-                $mapping['type'] = $idElement['type'];
-            }
-            if (isset($idElement['column'])) {
-                $mapping['columnName'] = $idElement['column'];
-            }
-            if (isset($idElement['length'])) {
-                $mapping['length'] = $idElement['length'];
-            }
-            if (isset($idElement['columnDefinition'])) {
-                $mapping['columnDefinition'] =
-                    $idElement['columnDefinition'];
-            }
-            if (isset($idElement['options'])) {
-                $mapping['options'] = $idElement['options'];
-            }
-            $metadata->mapField($mapping);
-            if (isset($idElement['generator'])) {
-                $metadata->setIdGeneratorType(
-                    constant(
-                        'Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_'
-                        . strtoupper($idElement['generator']['strategy'])
-                    )
-                );
-            }
-            // Check for SequenceGenerator/TableGenerator definition
-            if (isset($idElement['sequenceGenerator'])) {
-                $metadata->setSequenceGeneratorDefinition(
-                    $idElement['sequenceGenerator']
-                );
-            } else {
-                if (isset($idElement['customIdGenerator'])) {
-                    $customGenerator = $idElement['customIdGenerator'];
-                    $metadata->setCustomGeneratorDefinition(
-                        [
-                            'class' => (string)$customGenerator['class']
-                        ]
-                    );
-                } else {
-                    if (isset($idElement['tableGenerator'])) {
-                        throw MappingException::tableIdGeneratorNotImplemented(
-                            $className
-                        );
-                    }
-                }
-            }
         }
     }
 
