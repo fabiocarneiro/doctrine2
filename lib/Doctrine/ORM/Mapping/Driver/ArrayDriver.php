@@ -265,70 +265,7 @@ class ArrayDriver extends FileDriver
         array $element,
         ClassMetadata $metadata
     ) {
-        if ( ! isset($element['oneToOne'])) {
-            return;
-        }
 
-        foreach ($element['oneToOne'] as $name => $oneToOneElement) {
-            $mapping = [
-                'fieldName' => $name,
-                'targetEntity' => $oneToOneElement['targetEntity']
-            ];
-            if (isset($associationIds[$mapping['fieldName']])) {
-                $mapping['id'] = true;
-            }
-            if (isset($oneToOneElement['fetch'])) {
-                $mapping['fetch'] =
-                    constant(
-                        'Doctrine\ORM\Mapping\ClassMetadata::FETCH_'
-                        . $oneToOneElement['fetch']
-                    );
-            }
-            if (isset($oneToOneElement['mappedBy'])) {
-                $mapping['mappedBy'] = $oneToOneElement['mappedBy'];
-            } else {
-                if (isset($oneToOneElement['inversedBy'])) {
-                    $mapping['inversedBy'] = $oneToOneElement['inversedBy'];
-                }
-                $joinColumns = [];
-                if (isset($oneToOneElement['joinColumn'])) {
-                    $joinColumns[] =
-                        $this->joinColumnToArray(
-                            $oneToOneElement['joinColumn']
-                        );
-                } else {
-                    if (isset($oneToOneElement['joinColumns'])) {
-                        foreach ($oneToOneElement['joinColumns'] as
-                                 $joinColumnName => $joinColumnElement) {
-                            if ( ! isset($joinColumnElement['name'])) {
-                                $joinColumnElement['name'] =
-                                    $joinColumnName;
-                            }
-                            $joinColumns[] =
-                                $this->joinColumnToArray(
-                                    $joinColumnElement
-                                );
-                        }
-                    }
-                }
-                $mapping['joinColumns'] = $joinColumns;
-            }
-            if (isset($oneToOneElement['cascade'])) {
-                $mapping['cascade'] = $oneToOneElement['cascade'];
-            }
-            if (isset($oneToOneElement['orphanRemoval'])) {
-                $mapping['orphanRemoval'] =
-                    (bool)$oneToOneElement['orphanRemoval'];
-            }
-            $metadata->mapOneToOne($mapping);
-            // Evaluate second level cache
-            if (isset($oneToOneElement['cache'])) {
-                $metadata->enableAssociationCache(
-                    $mapping['fieldName'],
-                    $this->cacheToArray($oneToOneElement['cache'])
-                );
-            }
-        }
     }
 
     /**
@@ -639,29 +576,37 @@ class ArrayDriver extends FileDriver
         array $joinColumnElement
     ) {
         $joinColumn = [];
+
         if (isset($joinColumnElement['referencedColumnName'])) {
             $joinColumn['referencedColumnName'] =
                 (string)$joinColumnElement['referencedColumnName'];
         }
+
         if (isset($joinColumnElement['name'])) {
             $joinColumn['name'] = (string)$joinColumnElement['name'];
         }
+
         if (isset($joinColumnElement['fieldName'])) {
             $joinColumn['fieldName'] = (string)$joinColumnElement['fieldName'];
         }
+
         if (isset($joinColumnElement['unique'])) {
             $joinColumn['unique'] = (bool)$joinColumnElement['unique'];
         }
+
         if (isset($joinColumnElement['nullable'])) {
             $joinColumn['nullable'] = (bool)$joinColumnElement['nullable'];
         }
+
         if (isset($joinColumnElement['onDelete'])) {
             $joinColumn['onDelete'] = $joinColumnElement['onDelete'];
         }
+
         if (isset($joinColumnElement['columnDefinition'])) {
             $joinColumn['columnDefinition'] =
                 $joinColumnElement['columnDefinition'];
         }
+
         return $joinColumn;
     }
 
@@ -729,12 +674,17 @@ class ArrayDriver extends FileDriver
     private function cacheToArray(
         $cacheMapping
     ) {
-        $region =
-            isset($cacheMapping['region']) ? (string)$cacheMapping['region']
-                : null;
-        $usage  =
-            isset($cacheMapping['usage']) ? strtoupper($cacheMapping['usage'])
-                : null;
+        $region = null;
+        $usage  = null;
+
+        if (isset($cacheMapping['region'])) {
+            $region = (string)$cacheMapping['region'];
+        }
+
+        if (isset($cacheMapping['usage'])) {
+            $usage = (string)$cacheMapping['usage'];
+        }
+
         if ($usage
             && ! defined(
                 'Doctrine\ORM\Mapping\ClassMetadata::CACHE_USAGE_'
@@ -748,12 +698,14 @@ class ArrayDriver extends FileDriver
                 )
             );
         }
+
         if ($usage) {
             $usage = constant(
                 'Doctrine\ORM\Mapping\ClassMetadata::CACHE_USAGE_'
                 . $usage
             );
         }
+
         return [
             'usage' => $usage,
             'region' => $region,
