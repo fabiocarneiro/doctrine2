@@ -71,9 +71,6 @@ class ArrayDriver extends FileDriver
         // Evaluate sql result set mappings
         $this->evaluateSqlResultSetMappings($element, $metadata);
 
-        // Evaluate changeTrackingPolicy
-        $this->evaluateTrackingPolicy($element, $metadata);
-
         // Evaluate uniqueConstraints
         $this->evaluateUniqueConstraints($element, $metadata);
 
@@ -266,27 +263,6 @@ class ArrayDriver extends FileDriver
                 ]
             );
         }
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateTrackingPolicy(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['changeTrackingPolicy'])) {
-            return;
-        }
-
-        $metadata->setChangeTrackingPolicy(
-            constant(
-                'Doctrine\ORM\Mapping\ClassMetadata::CHANGETRACKING_'
-                . strtoupper($element['changeTrackingPolicy'])
-            )
-        );
     }
 
     /**
