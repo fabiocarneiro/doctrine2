@@ -75,9 +75,6 @@ class ArrayDriver extends FileDriver
             $metadata->table['options'] = $element['options'];
         }
 
-        // Evaluate oneToOne relationships
-        $this->evaluateOneToOne($element, $metadata);
-
         // Evaluate manyToOne relationships
         $this->evaluateManyToOne($element, $metadata);
 
@@ -251,18 +248,6 @@ class ArrayDriver extends FileDriver
                 ]
             );
         }
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateOneToOne(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-
     }
 
     /**
