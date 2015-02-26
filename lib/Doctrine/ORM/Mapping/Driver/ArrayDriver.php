@@ -75,9 +75,6 @@ class ArrayDriver extends FileDriver
             $metadata->table['options'] = $element['options'];
         }
 
-        // Evaluate manyToOne relationships
-        $this->evaluateManyToOne($element, $metadata);
-
         // Evaluate manyToMany relationships
         $this->evaluateManyToMany($element, $metadata);
 
@@ -247,70 +244,6 @@ class ArrayDriver extends FileDriver
                     'columns' => $columns
                 ]
             );
-        }
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateManyToOne(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['manyToOne'])) {
-            return;
-        }
-
-        foreach ($element['manyToOne'] as $name => $manyToOneElement) {
-            $mapping = [
-                'fieldName' => $name,
-                'targetEntity' => $manyToOneElement['targetEntity']
-            ];
-            if (isset($associationIds[$mapping['fieldName']])) {
-                $mapping['id'] = true;
-            }
-            if (isset($manyToOneElement['fetch'])) {
-                $mapping['fetch'] =
-                    constant(
-                        'Doctrine\ORM\Mapping\ClassMetadata::FETCH_'
-                        . $manyToOneElement['fetch']
-                    );
-            }
-            if (isset($manyToOneElement['inversedBy'])) {
-                $mapping['inversedBy'] = $manyToOneElement['inversedBy'];
-            }
-            $joinColumns = [];
-            if (isset($manyToOneElement['joinColumn'])) {
-                $joinColumns[] =
-                    $this->joinColumnToArray(
-                        $manyToOneElement['joinColumn']
-                    );
-            } else {
-                if (isset($manyToOneElement['joinColumns'])) {
-                    foreach ($manyToOneElement['joinColumns'] as
-                             $joinColumnName => $joinColumnElement) {
-                        if ( ! isset($joinColumnElement['name'])) {
-                            $joinColumnElement['name'] = $joinColumnName;
-                        }
-                        $joinColumns[] =
-                            $this->joinColumnToArray($joinColumnElement);
-                    }
-                }
-            }
-            $mapping['joinColumns'] = $joinColumns;
-            if (isset($manyToOneElement['cascade'])) {
-                $mapping['cascade'] = $manyToOneElement['cascade'];
-            }
-            $metadata->mapManyToOne($mapping);
-            // Evaluate second level cache
-            if (isset($manyToOneElement['cache'])) {
-                $metadata->enableAssociationCache(
-                    $mapping['fieldName'],
-                    $this->cacheToArray($manyToOneElement['cache'])
-                );
-            }
         }
     }
 
