@@ -75,9 +75,6 @@ class ArrayDriver extends FileDriver
             $metadata->table['options'] = $element['options'];
         }
 
-        // Evaluate manyToMany relationships
-        $this->evaluateManyToMany($element, $metadata);
-
         // Evaluate associationOverride
         $this->evaluateAssociationOverride($element, $metadata);
 
@@ -244,94 +241,6 @@ class ArrayDriver extends FileDriver
                     'columns' => $columns
                 ]
             );
-        }
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateManyToMany(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['manyToMany'])) {
-            return;
-        }
-
-        foreach ($element['manyToMany'] as $name => $manyToManyElement) {
-            $mapping = [
-                'fieldName' => $name,
-                'targetEntity' => $manyToManyElement['targetEntity']
-            ];
-            if (isset($manyToManyElement['fetch'])) {
-                $mapping['fetch'] =
-                    constant(
-                        'Doctrine\ORM\Mapping\ClassMetadata::FETCH_'
-                        . $manyToManyElement['fetch']
-                    );
-            }
-            if (isset($manyToManyElement['mappedBy'])) {
-                $mapping['mappedBy'] = $manyToManyElement['mappedBy'];
-            } else {
-                if (isset($manyToManyElement['joinTable'])) {
-                    $joinTableElement = $manyToManyElement['joinTable'];
-                    $joinTable        = [
-                        'name' => $joinTableElement['name']
-                    ];
-                    if (isset($joinTableElement['schema'])) {
-                        $joinTable['schema'] = $joinTableElement['schema'];
-                    }
-                    if (isset($joinTableElement['joinColumns'])) {
-                        foreach ($joinTableElement['joinColumns'] as
-                                 $joinColumnName => $joinColumnElement) {
-                            if ( ! isset($joinColumnElement['name'])) {
-                                $joinColumnElement['name'] =
-                                    $joinColumnName;
-                            }
-                        }
-                        $joinTable['joinColumns'][] =
-                            $this->joinColumnToArray($joinColumnElement);
-                    }
-                    if (isset($joinTableElement['inverseJoinColumns'])) {
-                        foreach ($joinTableElement['inverseJoinColumns'] as
-                                 $joinColumnName => $joinColumnElement) {
-                            if ( ! isset($joinColumnElement['name'])) {
-                                $joinColumnElement['name'] =
-                                    $joinColumnName;
-                            }
-                        }
-                        $joinTable['inverseJoinColumns'][] =
-                            $this->joinColumnToArray($joinColumnElement);
-                    }
-                    $mapping['joinTable'] = $joinTable;
-                }
-            }
-            if (isset($manyToManyElement['inversedBy'])) {
-                $mapping['inversedBy'] = $manyToManyElement['inversedBy'];
-            }
-            if (isset($manyToManyElement['cascade'])) {
-                $mapping['cascade'] = $manyToManyElement['cascade'];
-            }
-            if (isset($manyToManyElement['orderBy'])) {
-                $mapping['orderBy'] = $manyToManyElement['orderBy'];
-            }
-            if (isset($manyToManyElement['indexBy'])) {
-                $mapping['indexBy'] = $manyToManyElement['indexBy'];
-            }
-            if (isset($manyToManyElement['orphanRemoval'])) {
-                $mapping['orphanRemoval'] =
-                    (bool)$manyToManyElement['orphanRemoval'];
-            }
-            $metadata->mapManyToMany($mapping);
-            // Evaluate second level cache
-            if (isset($manyToManyElement['cache'])) {
-                $metadata->enableAssociationCache(
-                    $mapping['fieldName'],
-                    $this->cacheToArray($manyToManyElement['cache'])
-                );
-            }
         }
     }
 
