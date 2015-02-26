@@ -90,9 +90,6 @@ class ArrayDriver extends FileDriver
         // Evaluate attributeOverride
         $this->evaluateAttributeOverride($element, $metadata);
 
-        // Evaluate lifeCycleCallbacks
-        $this->evaluateLifecycleCallbacks($element, $metadata);
-
         // Evaluate entityListeners
         $this->evaluateEntityListeners($element, $metadata);
     }
@@ -503,29 +500,6 @@ class ArrayDriver extends FileDriver
             $mapping =
                 $this->columnToArray($fieldName, $attributeOverrideElement);
             $metadata->setAttributeOverride($fieldName, $mapping);
-        }
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateLifecycleCallbacks(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['lifecycleCallbacks'])) {
-            return;
-        }
-
-        foreach ($element['lifecycleCallbacks'] as $type => $methods) {
-            foreach ($methods as $method) {
-                $metadata->addLifecycleCallback(
-                    $method,
-                    constant('Doctrine\ORM\Events::' . $type)
-                );
-            }
         }
     }
 
