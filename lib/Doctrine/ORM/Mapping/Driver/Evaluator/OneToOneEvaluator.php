@@ -27,9 +27,9 @@ class OneToOneEvaluator implements EvaluatorInterface
             return;
         }
 
-        foreach ($element['oneToOne'] as $name => $oneToOneElement) {
+        foreach ($element['oneToOne'] as $oneToOneElement) {
             $mapping = [
-                'fieldName' => $name,
+                'fieldName' => $oneToOneElement['fieldName'],
                 'targetEntity' => $oneToOneElement['targetEntity']
             ];
 

@@ -28,9 +28,9 @@ class OneToManyEvaluator implements EvaluatorInterface
             return;
         }
 
-        foreach ($element['oneToMany'] as $name => $oneToManyElement) {
+        foreach ($element['oneToMany'] as $oneToManyElement) {
             $mapping = [
-                'fieldName' => $name,
+                'fieldName' => $oneToManyElement['fieldName'],
                 'targetEntity' => $oneToManyElement['targetEntity'],
                 'mappedBy' => $oneToManyElement['mappedBy']
             ];

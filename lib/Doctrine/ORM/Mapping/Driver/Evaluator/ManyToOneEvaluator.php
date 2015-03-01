@@ -27,9 +27,9 @@ class ManyToOneEvaluator implements EvaluatorInterface
             return;
         }
 
-        foreach ($element['manyToOne'] as $name => $manyToOneElement) {
+        foreach ($element['manyToOne'] as $manyToOneElement) {
             $mapping = [
-                'fieldName' => $name,
+                'fieldName' => $manyToOneElement['fieldName'],
                 'targetEntity' => $manyToOneElement['targetEntity']
             ];
 

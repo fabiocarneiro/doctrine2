@@ -30,17 +30,17 @@ class AssociationEvaluator implements EvaluatorInterface
 
         $associationIds = [];
         // Evaluate identifier settings
-        foreach ($element['id'] as $name => $idElement) {
+        foreach ($element['id'] as $idElement) {
             if (isset($idElement['associationKey'])
                 && $idElement['associationKey'] == true
             ) {
-                $associationIds[$name] = true;
+                $associationIds[$idElement['fieldName']] = true;
                 continue;
             }
 
             $mapping = [
                 'id' => true,
-                'fieldName' => $name
+                'fieldName' => $idElement['fieldName']
             ];
 
             if (isset($idElement['type'])) {

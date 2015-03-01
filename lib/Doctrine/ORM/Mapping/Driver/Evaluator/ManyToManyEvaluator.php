@@ -29,9 +29,9 @@ class ManyToManyEvaluator implements EvaluatorInterface
             return;
         }
 
-        foreach ($element['manyToMany'] as $name => $manyToManyElement) {
+        foreach ($element['manyToMany'] as $manyToManyElement) {
             $mapping = [
-                'fieldName' => $name,
+                'fieldName' => $manyToManyElement['fieldName'],
                 'targetEntity' => $manyToManyElement['targetEntity']
             ];
 
