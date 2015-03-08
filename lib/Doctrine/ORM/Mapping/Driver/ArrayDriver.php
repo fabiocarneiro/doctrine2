@@ -65,9 +65,6 @@ class ArrayDriver extends FileDriver
         // Evaluate model type
         $this->evaluateModelType($element, $metadata, $className);
 
-        // Evaluate root level properties
-        $this->evaluateRootLevelProperties($element, $metadata);
-
         // Evaluate sql result set mappings
         $this->evaluateSqlResultSetMappings($element, $metadata);
 
@@ -131,27 +128,6 @@ class ArrayDriver extends FileDriver
         throw MappingException::classIsNotAValidEntityOrMappedSuperClass(
             $className
         );
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateRootLevelProperties(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        $primaryTable = [];
-
-        if (isset($element['table'])) {
-            $primaryTable['name'] = $element['table'];
-        }
-
-        if (isset($element['schema'])) {
-            $primaryTable['schema'] = $element['schema'];
-        }
-        $metadata->setPrimaryTable($primaryTable);
     }
 
     /**
