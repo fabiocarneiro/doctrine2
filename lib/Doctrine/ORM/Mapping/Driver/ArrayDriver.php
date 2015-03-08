@@ -65,35 +65,9 @@ class ArrayDriver extends FileDriver
         if (isset($element['options'])) {
             $metadata->table['options'] = $element['options'];
         }
-
-        // Evaluate attributeOverride
-        $this->evaluateAttributeOverride($element, $metadata);
-
+        
         // Evaluate entityListeners
         $this->evaluateEntityListeners($element, $metadata);
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateAttributeOverride(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['attributeOverride'])
-            || ! is_array($element['attributeOverride'])
-        ) {
-            return;
-        }
-
-        foreach ($element['attributeOverride'] as $fieldName =>
-                 $attributeOverrideElement) {
-            $mapping =
-                $this->columnToArray($fieldName, $attributeOverrideElement);
-            $metadata->setAttributeOverride($fieldName, $mapping);
-        }
     }
 
     /**
