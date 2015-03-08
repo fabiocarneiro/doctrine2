@@ -4,6 +4,7 @@ namespace Doctrine\ORM\Mapping\Driver\Evaluator;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\MappingException;
 use InvalidArgumentException;
 
 
@@ -20,20 +21,18 @@ class AssociationEvaluator implements EvaluatorInterface
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['id'])) {
+        if (! isset($element['id'])) {
             return;
         }
 
         $associationIds = [];
         // Evaluate identifier settings
         foreach ($element['id'] as $idElement) {
-            if (isset($idElement['associationKey'])
-                && $idElement['associationKey'] == true
-            ) {
+            if (isset($idElement['associationKey']) && $idElement['associationKey'] == true) {
                 $associationIds[$idElement['fieldName']] = true;
                 continue;
             }
