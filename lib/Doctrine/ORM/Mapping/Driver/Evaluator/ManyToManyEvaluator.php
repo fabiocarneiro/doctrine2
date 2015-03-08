@@ -21,11 +21,11 @@ class ManyToManyEvaluator implements EvaluatorInterface
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['manyToMany'])) {
+        if (! isset($element['manyToMany'])) {
             return;
         }
 
@@ -38,8 +38,7 @@ class ManyToManyEvaluator implements EvaluatorInterface
             if (isset($manyToManyElement['fetch'])) {
                 $mapping['fetch'] =
                     constant(
-                        'Doctrine\ORM\Mapping\ClassMetadata::FETCH_'
-                        . $manyToManyElement['fetch']
+                        'Doctrine\ORM\Mapping\ClassMetadata::FETCH_' . $manyToManyElement['fetch']
                     );
             }
 
@@ -48,34 +47,35 @@ class ManyToManyEvaluator implements EvaluatorInterface
             } else {
                 if (isset($manyToManyElement['joinTable'])) {
                     $joinTableElement = $manyToManyElement['joinTable'];
+                    
                     $joinTable        = [
                         'name' => $joinTableElement['name']
                     ];
+
                     if (isset($joinTableElement['schema'])) {
                         $joinTable['schema'] = $joinTableElement['schema'];
                     }
+
                     if (isset($joinTableElement['joinColumns'])) {
-                        foreach ($joinTableElement['joinColumns'] as
-                                 $joinColumnName => $joinColumnElement) {
-                            if ( ! isset($joinColumnElement['name'])) {
-                                $joinColumnElement['name'] =
-                                    $joinColumnName;
+                        foreach ($joinTableElement['joinColumns'] as $joinColumnName => $joinColumnElement) {
+                            if (! isset($joinColumnElement['name'])) {
+                                $joinColumnElement['name'] = $joinColumnName;
                             }
                         }
-                        $joinTable['joinColumns'][] =
-                            $this->joinColumnToArray($joinColumnElement);
+
+                        $joinTable['joinColumns'][] = $this->joinColumnToArray($joinColumnElement);
                     }
+
                     if (isset($joinTableElement['inverseJoinColumns'])) {
-                        foreach ($joinTableElement['inverseJoinColumns'] as
-                                 $joinColumnName => $joinColumnElement) {
-                            if ( ! isset($joinColumnElement['name'])) {
-                                $joinColumnElement['name'] =
-                                    $joinColumnName;
+                        foreach ($joinTableElement['inverseJoinColumns'] as $joinColumnName => $joinColumnElement) {
+                            if (! isset($joinColumnElement['name'])) {
+                                $joinColumnElement['name'] = $joinColumnName;
                             }
                         }
-                        $joinTable['inverseJoinColumns'][] =
-                            $this->joinColumnToArray($joinColumnElement);
+
+                        $joinTable['inverseJoinColumns'][] = $this->joinColumnToArray($joinColumnElement);
                     }
+
                     $mapping['joinTable'] = $joinTable;
                 }
             }

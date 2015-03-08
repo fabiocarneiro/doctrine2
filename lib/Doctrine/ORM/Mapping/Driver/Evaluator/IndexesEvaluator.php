@@ -4,6 +4,7 @@ namespace Doctrine\ORM\Mapping\Driver\Evaluator;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use InvalidArgumentException;
 
 /**
  * @user    Fábio Carneiro <fahecs@gmail.com>
