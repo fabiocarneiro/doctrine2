@@ -62,9 +62,6 @@ class ArrayDriver extends FileDriver
             $evaluator->evaluate($element, $metadata);
         }
 
-        // Evaluate model type
-        $this->evaluateModelType($element, $metadata, $className);
-
         // Evaluate sql result set mappings
         $this->evaluateSqlResultSetMappings($element, $metadata);
 
@@ -80,54 +77,6 @@ class ArrayDriver extends FileDriver
 
         // Evaluate entityListeners
         $this->evaluateEntityListeners($element, $metadata);
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @param string        $className
-     * @return void
-     */
-    private function evaluateModelType(
-        array $element,
-        ClassMetadata $metadata,
-        $className
-    ) {
-        if ($element['type'] == 'entity') {
-            if (isset($element['repositoryClass'])) {
-                $metadata->setCustomRepositoryClass(
-                    $element['repositoryClass']
-                );
-            }
-            if (isset($element['readOnly']) && $element['readOnly'] == true) {
-                $metadata->markReadOnly();
-            }
-
-            return;
-        }
-
-        if ($element['type'] == 'mappedSuperclass') {
-            $repositoryClass = null;
-
-            if (isset($element['repositoryClass'])) {
-                $repositoryClass = $element['repositoryClass'];
-            }
-
-            $metadata->setCustomRepositoryClass($repositoryClass);
-            $metadata->isMappedSuperclass = true;
-
-            return;
-        }
-
-        if ($element['type'] == 'embeddable') {
-            $metadata->isEmbeddedClass = true;
-
-            return;
-        }
-
-        throw MappingException::classIsNotAValidEntityOrMappedSuperClass(
-            $className
-        );
     }
 
     /**
