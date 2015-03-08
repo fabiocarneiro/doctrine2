@@ -19,17 +19,17 @@ class EmbeddedEvaluator implements EvaluatorInterface
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['embedded'])) {
+        if (! isset($element['embedded'])) {
             return;
         }
 
-        foreach ($element['embedded'] as $name => $embeddedMapping) {
+        foreach ($element['embedded'] as $embeddedMapping) {
             $mapping = [
-                'fieldName' => $name,
+                'fieldName' => $embeddedMapping['fieldname'],
                 'class' => $embeddedMapping['class'],
                 'columnPrefix' => isset($embeddedMapping['columnPrefix'])
                     ? $embeddedMapping['columnPrefix'] : null,
