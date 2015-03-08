@@ -47,7 +47,6 @@ class ManyToManyEvaluator implements EvaluatorInterface
             } else {
                 if (isset($manyToManyElement['joinTable'])) {
                     $joinTableElement = $manyToManyElement['joinTable'];
-                    
                     $joinTable        = [
                         'name' => $joinTableElement['name']
                     ];
