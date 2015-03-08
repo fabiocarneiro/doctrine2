@@ -62,9 +62,6 @@ class ArrayDriver extends FileDriver
             $evaluator->evaluate($element, $metadata);
         }
 
-        // Evaluate sql result set mappings
-        $this->evaluateSqlResultSetMappings($element, $metadata);
-
         if (isset($element['options'])) {
             $metadata->table['options'] = $element['options'];
         }
@@ -77,96 +74,6 @@ class ArrayDriver extends FileDriver
 
         // Evaluate entityListeners
         $this->evaluateEntityListeners($element, $metadata);
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateSqlResultSetMappings(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['sqlResultSetMappings'])) {
-            return;
-        }
-
-        foreach ($element['sqlResultSetMappings'] as $name => $resultSetMapping) {
-            if ( ! isset($resultSetMapping['name'])) {
-                $resultSetMapping['name'] = $name;
-            }
-
-            $entities = [];
-            $columns  = [];
-
-            if (isset($resultSetMapping['entityResult'])) {
-                foreach ($resultSetMapping['entityResult'] as $entityResultElement) {
-
-                    $entityClass         = null;
-                    $discriminatorColumn = null;
-
-
-                    if (isset($entityResultElement['entityClass'])) {
-                        $entityClass = $entityResultElement['entityClass'];
-                    }
-
-                    if (isset($entityResultElement['discriminatorColumn'])) {
-                        $discriminatorColumn = $entityResultElement['discriminatorColumn'];
-                    }
-
-                    $entityResult = [
-                        'fields' => [],
-                        'entityClass' => $entityClass,
-                        'discriminatorColumn' => $discriminatorColumn,
-                    ];
-
-                    if (isset($entityResultElement['fieldResult'])) {
-                        foreach ($entityResultElement['fieldResult'] as $fieldResultElement) {
-                            $name   = null;
-                            $column = null;
-
-                            if (isset($fieldResultElement['name'])) {
-                                $name = $fieldResultElement['name'];
-                            }
-
-                            if (isset($fieldResultElement['column'])) {
-                                $column = $fieldResultElement['column'];
-                            }
-
-                            $entityResult['fields'][] = [
-                                'name' => $name,
-                                'column' => $column
-                            ];
-                        }
-                    }
-
-                    $entities[] = $entityResult;
-                }
-            }
-
-            if (isset($resultSetMapping['columnResult'])) {
-                foreach ($resultSetMapping['columnResult'] as $columnResultAnnot) {
-                    $name = null;
-
-                    if (isset($columnResultAnnot['name'])) {
-                        $name = $columnResultAnnot['name'];
-                    }
-
-                    $columns[] = [
-                        'name' => $name,
-                    ];
-                }
-            }
-
-            $metadata->addSqlResultSetMapping(
-                [
-                    'name' => $resultSetMapping['name'],
-                    'entities' => $entities,
-                    'columns' => $columns
-                ]
-            );
-        }
     }
 
     /**
