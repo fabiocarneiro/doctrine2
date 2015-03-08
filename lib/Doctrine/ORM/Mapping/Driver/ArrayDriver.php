@@ -31,8 +31,8 @@ class ArrayDriver extends FileDriver
      */
     public function __construct(
         $locator,
-        $fileExtension = self::DEFAULT_FILE_EXTENSION,
-        array $evaluators
+        array $evaluators,
+        $fileExtension = self::DEFAULT_FILE_EXTENSION
     ) {
         $this->evaluators = $evaluators;
         parent::__construct($locator, $fileExtension);
@@ -53,10 +53,6 @@ class ArrayDriver extends FileDriver
     {
         /* @var $metadata \Doctrine\ORM\Mapping\ClassMetadataInfo */
         $element = $this->getElement($className);
-
-        if (! isset($element['type'])) {
-            throw MappingException::invalidMapping('type');
-        }
 
         foreach ($this->evaluators as $evaluator) {
             $evaluator->evaluate($element, $metadata);

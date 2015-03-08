@@ -25,6 +25,10 @@ class ModelTypeEvaluator implements EvaluatorInterface
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
+        if (! isset($element['type'])) {
+            throw MappingException::invalidMapping('type');
+        }
+
         if ($element['type'] == 'entity') {
             if (isset($element['repositoryClass'])) {
                 $metadata->setCustomRepositoryClass(

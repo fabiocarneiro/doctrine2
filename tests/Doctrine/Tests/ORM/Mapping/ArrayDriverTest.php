@@ -2,29 +2,26 @@
 
 namespace Doctrine\Tests\ORM\Mapping;
 
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\Tests\Models\Cache\City;
 use PHPUnit_Framework_TestCase as TestCase;
 use Doctrine\ORM\Mapping\Driver\ArrayDriver;
-use Doctrine\Common\Persistence\Mapping\Driver\FileLocator;
 
 class ArrayDriverTest extends TestCase
 {
-    public function testCanLoadDriver()
+    public function testDriverLoadsMetadata()
     {
-        $locator = $this->getMock(FileLocator::class);
+        $locator = $this->getMock('Doctrine\Common\Persistence\Mapping\Driver\FileLocator');
         $locator
             ->expects($this->once())
             ->method('findMappingFile')
-            ->with(City::class)
+            ->with('Doctrine\Tests\Models\Cache\City')
             ->willReturn(__DIR__ . '/array/Doctrine.Tests.Models.Cache.City.mapping.php');
 
         $classMetadata = $this
-            ->getMockBuilder(ClassMetadataInfo::class)
+            ->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadataInfo')
             ->disableOriginalConstructor()
             ->getMock();
-        $driver        = new ArrayDriver($locator);
+        $driver        = new ArrayDriver($locator, array());
 
-        $driver->loadMetadataForClass(City::class, $classMetadata);
+        $driver->loadMetadataForClass('Doctrine\Tests\Models\Cache\City', $classMetadata);
     }
 }
