@@ -66,77 +66,11 @@ class ArrayDriver extends FileDriver
             $metadata->table['options'] = $element['options'];
         }
 
-        // Evaluate associationOverride
-        $this->evaluateAssociationOverride($element, $metadata);
-
         // Evaluate attributeOverride
         $this->evaluateAttributeOverride($element, $metadata);
 
         // Evaluate entityListeners
         $this->evaluateEntityListeners($element, $metadata);
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateAssociationOverride(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['associationOverride'])
-            || ! is_array($element['associationOverride'])
-        ) {
-            return;
-        }
-
-        foreach ($element['associationOverride'] as $fieldName =>
-                 $associationOverrideElement) {
-            $override = [];
-            // Check for joinColumn
-            if (isset($associationOverrideElement['joinColumn'])) {
-                $joinColumns = [];
-                foreach ($associationOverrideElement['joinColumn'] as $name =>
-                         $joinColumnElement) {
-                    if ( ! isset($joinColumnElement['name'])) {
-                        $joinColumnElement['name'] = $name;
-                    }
-                    $joinColumns[] =
-                        $this->joinColumnToArray($joinColumnElement);
-                }
-                $override['joinColumns'] = $joinColumns;
-            }
-            // Check for joinTable
-            if (isset($associationOverrideElement['joinTable'])) {
-                $joinTableElement =
-                    $associationOverrideElement['joinTable'];
-                $joinTable        = [
-                    'name' => $joinTableElement['name']
-                ];
-                if (isset($joinTableElement['schema'])) {
-                    $joinTable['schema'] = $joinTableElement['schema'];
-                }
-                foreach ($joinTableElement['joinColumns'] as $name =>
-                         $joinColumnElement) {
-                    if ( ! isset($joinColumnElement['name'])) {
-                        $joinColumnElement['name'] = $name;
-                    }
-                    $joinTable['joinColumns'][] =
-                        $this->joinColumnToArray($joinColumnElement);
-                }
-                foreach ($joinTableElement['inverseJoinColumns'] as $name =>
-                         $joinColumnElement) {
-                    if ( ! isset($joinColumnElement['name'])) {
-                        $joinColumnElement['name'] = $name;
-                    }
-                    $joinTable['inverseJoinColumns'][] =
-                        $this->joinColumnToArray($joinColumnElement);
-                }
-                $override['joinTable'] = $joinTable;
-            }
-            $metadata->setAssociationOverride($fieldName, $override);
-        }
     }
 
     /**
