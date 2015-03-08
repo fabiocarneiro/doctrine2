@@ -65,44 +65,6 @@ class ArrayDriver extends FileDriver
         if (isset($element['options'])) {
             $metadata->table['options'] = $element['options'];
         }
-        
-        // Evaluate entityListeners
-        $this->evaluateEntityListeners($element, $metadata);
-    }
-
-    /**
-     * @param array         $element
-     * @param ClassMetadata $metadata
-     * @return void
-     */
-    private function evaluateEntityListeners(
-        array $element,
-        ClassMetadata $metadata
-    ) {
-        if ( ! isset($element['entityListeners'])) {
-            return;
-        }
-
-        foreach ($element['entityListeners'] as $className => $entityListener) {
-            // Evaluate the listener using naming convention.
-            if (empty($entityListener)) {
-                EntityListenerBuilder::bindEntityListener(
-                    $metadata,
-                    $className
-                );
-                continue;
-            }
-            foreach ($entityListener as $eventName => $callbackElement) {
-                foreach ($callbackElement as $methodName) {
-                    $metadata->addEntityListener(
-                        $eventName,
-                        $className,
-                        $methodName
-                    );
-                }
-            }
-        }
-
     }
 
     /**
