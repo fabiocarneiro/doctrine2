@@ -21,11 +21,11 @@ class InheritanceEvaluator implements EvaluatorInterface
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['inheritanceType'])) {
+        if (! isset($element['inheritanceType'])) {
             return;
         }
 
@@ -38,18 +38,34 @@ class InheritanceEvaluator implements EvaluatorInterface
         if ($metadata->inheritanceType != \Doctrine\ORM\Mapping\ClassMetadata::INHERITANCE_TYPE_NONE) {
             // Evaluate discriminatorColumn
             if (isset($element['discriminatorColumn'])) {
-                $discrColumn = $element['discriminatorColumn'];
+                $discrColumn      = $element['discriminatorColumn'];
+                $name             = null;
+                $type             = null;
+                $length           = null;
+                $columnDefinition = null;
+
+                if (isset($discrColumn['name'])) {
+                    $name = (string)$discrColumn['name'];
+                }
+
+                if (isset($discrColumn['type'])) {
+                    $type = (string)$discrColumn['type'];
+                }
+
+                if (isset($discrColumn['length'])) {
+                    $length = (string)$discrColumn['length'];
+                }
+
+                if (isset($discrColumn['columnDefinition'])) {
+                    $columnDefinition = (string)$discrColumn['columnDefinition'];
+                }
+
                 $metadata->setDiscriminatorColumn(
                     [
-                        'name' => isset($discrColumn['name'])
-                            ? (string)$discrColumn['name'] : null,
-                        'type' => isset($discrColumn['type'])
-                            ? (string)$discrColumn['type'] : null,
-                        'length' => isset($discrColumn['length'])
-                            ? (string)$discrColumn['length'] : null,
-                        'columnDefinition' => isset($discrColumn['columnDefinition'])
-                            ? (string)$discrColumn['columnDefinition']
-                            : null
+                        'name' => $name,
+                        'type' => $type,
+                        'length' => $length,
+                        'columnDefinition' => $columnDefinition
                     ]
                 );
             } else {
@@ -61,6 +77,7 @@ class InheritanceEvaluator implements EvaluatorInterface
                     ]
                 );
             }
+
             // Evaluate discriminatorMap
             if (isset($element['discriminatorMap'])) {
                 $metadata->setDiscriminatorMap(

@@ -54,6 +54,7 @@ class SqlResultSetMappingsEvaluator implements EvaluatorInterface
                         'fields' => [],
                         'entityClass' => $entityClass,
                         'discriminatorColumn' => $discriminatorColumn,
+
                     ];
 
                     if (isset($entityResultElement['fieldResult'])) {

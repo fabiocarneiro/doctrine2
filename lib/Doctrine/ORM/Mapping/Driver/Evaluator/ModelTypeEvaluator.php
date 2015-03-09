@@ -13,7 +13,6 @@ use InvalidArgumentException;
  */
 class ModelTypeEvaluator implements EvaluatorInterface
 {
-
     /**
      * @param array             $element
      * @param ClassMetadataInfo $metadata

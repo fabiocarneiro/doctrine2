@@ -21,11 +21,11 @@ class NamedQueriesEvaluator implements EvaluatorInterface
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['namedQueries'])) {
+        if (! isset($element['namedQueries'])) {
             return;
         }
 
@@ -33,9 +33,11 @@ class NamedQueriesEvaluator implements EvaluatorInterface
             if (is_string($queryMapping)) {
                 $queryMapping = ['query' => $queryMapping];
             }
-            if ( ! isset($queryMapping['name'])) {
+
+            if (! isset($queryMapping['name'])) {
                 $queryMapping['name'] = $name;
             }
+
             $metadata->addNamedQuery($queryMapping);
         }
     }

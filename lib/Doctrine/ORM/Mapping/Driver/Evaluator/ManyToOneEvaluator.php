@@ -19,11 +19,11 @@ class ManyToOneEvaluator implements EvaluatorInterface
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['manyToOne'])) {
+        if (! isset($element['manyToOne'])) {
             return;
         }
 
@@ -59,7 +59,7 @@ class ManyToOneEvaluator implements EvaluatorInterface
                 if (isset($manyToOneElement['joinColumns'])) {
                     foreach ($manyToOneElement['joinColumns'] as
                              $joinColumnName => $joinColumnElement) {
-                        if ( ! isset($joinColumnElement['name'])) {
+                        if (! isset($joinColumnElement['name'])) {
                             $joinColumnElement['name'] = $joinColumnName;
                         }
                         $joinColumns[] =
@@ -100,8 +100,7 @@ class ManyToOneEvaluator implements EvaluatorInterface
         $joinColumn = [];
 
         if (isset($joinColumnElement['referencedColumnName'])) {
-            $joinColumn['referencedColumnName'] =
-                (string)$joinColumnElement['referencedColumnName'];
+            $joinColumn['referencedColumnName'] = (string)$joinColumnElement['referencedColumnName'];
         }
 
         if (isset($joinColumnElement['name'])) {
@@ -125,8 +124,7 @@ class ManyToOneEvaluator implements EvaluatorInterface
         }
 
         if (isset($joinColumnElement['columnDefinition'])) {
-            $joinColumn['columnDefinition'] =
-                $joinColumnElement['columnDefinition'];
+            $joinColumn['columnDefinition'] = $joinColumnElement['columnDefinition'];
         }
 
         return $joinColumn;

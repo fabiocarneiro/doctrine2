@@ -19,16 +19,16 @@ class NamedNativeQueriesEvaluator implements EvaluatorInterface
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['namedNativeQueries'])) {
+        if (! isset($element['namedNativeQueries'])) {
             return;
         }
 
         foreach ($element['namedNativeQueries'] as $name => $mappingElement) {
-            if ( ! isset($mappingElement['name'])) {
+            if (! isset($mappingElement['name'])) {
                 $mappingElement['name'] = $name;
             }
 

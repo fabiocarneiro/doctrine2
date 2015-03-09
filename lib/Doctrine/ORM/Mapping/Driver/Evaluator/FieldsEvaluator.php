@@ -22,11 +22,11 @@ class FieldsEvaluator implements EvaluatorInterface
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['fields'])) {
+        if (! isset($element['fields'])) {
             return;
         }
 
@@ -71,6 +71,7 @@ class FieldsEvaluator implements EvaluatorInterface
         $mapping = [
             'fieldName' => $fieldName
         ];
+
         if (isset($column['type'])) {
             $params          = explode('(', $column['type']);
             $column['type']  = $params[0];
@@ -80,33 +81,43 @@ class FieldsEvaluator implements EvaluatorInterface
                     (integer)substr($params[1], 0, strlen($params[1]) - 1);
             }
         }
+
         if (isset($column['column'])) {
             $mapping['columnName'] = $column['column'];
         }
+
         if (isset($column['length'])) {
             $mapping['length'] = $column['length'];
         }
+
         if (isset($column['precision'])) {
             $mapping['precision'] = $column['precision'];
         }
+
         if (isset($column['scale'])) {
             $mapping['scale'] = $column['scale'];
         }
+
         if (isset($column['unique'])) {
             $mapping['unique'] = (bool)$column['unique'];
         }
+
         if (isset($column['options'])) {
             $mapping['options'] = $column['options'];
         }
+
         if (isset($column['nullable'])) {
             $mapping['nullable'] = $column['nullable'];
         }
+
         if (isset($column['version']) && $column['version']) {
             $mapping['version'] = $column['version'];
         }
+
         if (isset($column['columnDefinition'])) {
             $mapping['columnDefinition'] = $column['columnDefinition'];
         }
+
         return $mapping;
     }
 }

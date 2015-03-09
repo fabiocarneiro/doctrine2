@@ -20,11 +20,11 @@ class OneToManyEvaluator implements EvaluatorInterface
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['oneToMany'])) {
+        if (! isset($element['oneToMany'])) {
             return;
         }
 
@@ -80,18 +80,18 @@ class OneToManyEvaluator implements EvaluatorInterface
     private function cacheToArray(
         $cacheMapping
     ) {
-        $region =
-            isset($cacheMapping['region']) ? (string)$cacheMapping['region']
-                : null;
-        $usage  =
-            isset($cacheMapping['usage']) ? strtoupper($cacheMapping['usage'])
-                : null;
-        if ($usage
-            && ! defined(
-                'Doctrine\ORM\Mapping\ClassMetadata::CACHE_USAGE_'
-                . $usage
-            )
-        ) {
+        $region = null;
+        $usage  = null;
+
+        if (isset($cacheMapping['region'])) {
+            $region = (string)$cacheMapping['region'];
+        }
+
+        if (isset($cacheMapping['usage'])) {
+            $usage = strtoupper($cacheMapping['usage']);
+        }
+
+        if ($usage && ! defined('Doctrine\ORM\Mapping\ClassMetadata::CACHE_USAGE_' . $usage)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Invalid cache usage "%s"',
@@ -99,12 +99,14 @@ class OneToManyEvaluator implements EvaluatorInterface
                 )
             );
         }
+
         if ($usage) {
             $usage = constant(
                 'Doctrine\ORM\Mapping\ClassMetadata::CACHE_USAGE_'
                 . $usage
             );
         }
+
         return [
             'usage' => $usage,
             'region' => $region,

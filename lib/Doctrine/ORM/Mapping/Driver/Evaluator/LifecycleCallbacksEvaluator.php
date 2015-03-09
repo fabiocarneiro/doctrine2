@@ -14,17 +14,17 @@ use InvalidArgumentException;
 class LifecycleCallbacksEvaluator implements EvaluatorInterface
 {
     /**
-     * @param array         $element
+     * @param array             $element
      * @param ClassMetadataInfo $metadata
      * @return void
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['lifecycleCallbacks'])) {
+        if (! isset($element['lifecycleCallbacks'])) {
             return;
         }
 

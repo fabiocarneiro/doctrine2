@@ -19,11 +19,11 @@ class OneToOneEvaluator implements EvaluatorInterface
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['oneToOne'])) {
+        if (! isset($element['oneToOne'])) {
             return;
         }
 
@@ -59,7 +59,7 @@ class OneToOneEvaluator implements EvaluatorInterface
                 } else {
                     if (isset($oneToOneElement['joinColumns'])) {
                         foreach ($oneToOneElement['joinColumns'] as $joinColumnName => $joinColumnElement) {
-                            if ( ! isset($joinColumnElement['name'])) {
+                            if (! isset($joinColumnElement['name'])) {
                                 $joinColumnElement['name'] = $joinColumnName;
                             }
 

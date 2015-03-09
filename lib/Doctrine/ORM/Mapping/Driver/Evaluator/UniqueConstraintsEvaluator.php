@@ -20,16 +20,16 @@ class UniqueConstraintsEvaluator implements EvaluatorInterface
      */
     public function evaluate(array $element, ClassMetadata $metadata)
     {
-        if ( ! $metadata instanceof ClassMetadataInfo) {
+        if (! $metadata instanceof ClassMetadataInfo) {
             throw new InvalidArgumentException('Metadata must be a instance of ClassMetadataInfo');
         }
 
-        if ( ! isset($element['uniqueConstraints'])) {
+        if (! isset($element['uniqueConstraints'])) {
             return;
         }
 
         foreach ($element['uniqueConstraints'] as $name => $uniqueYml) {
-            if ( ! isset($uniqueYml['name'])) {
+            if (! isset($uniqueYml['name'])) {
                 $uniqueYml['name'] = $name;
             }
 
