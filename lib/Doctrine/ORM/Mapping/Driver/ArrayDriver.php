@@ -57,9 +57,5 @@ class ArrayDriver extends FileDriver
         foreach ($this->evaluators as $evaluator) {
             $evaluator->evaluate($element, $metadata);
         }
-
-        if (isset($element['options'])) {
-            $metadata->table['options'] = $element['options'];
-        }
     }
 }

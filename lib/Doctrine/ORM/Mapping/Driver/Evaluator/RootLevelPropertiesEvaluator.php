@@ -26,6 +26,10 @@ class RootLevelPropertiesEvaluator implements EvaluatorInterface
 
         $primaryTable = [];
 
+        if (isset($element['options'])) {
+            $metadata->table['options'] = $element['options'];
+        }
+
         if (isset($element['table'])) {
             $primaryTable['name'] = $element['table'];
         }
