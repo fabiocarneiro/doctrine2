@@ -12,6 +12,8 @@ use InvalidArgumentException;
  */
 class SecondLevelCacheEvaluator implements EvaluatorInterface
 {
+    use CacheToArrayTrait;
+    
     /**
      * {@inheritDoc}
      * @param array             $element
@@ -29,46 +31,5 @@ class SecondLevelCacheEvaluator implements EvaluatorInterface
         }
 
         $metadata->enableCache($this->cacheToArray($element['cache']));
-    }
-
-    /**
-     * Parse / Normalize the cache configuration
-     *
-     * @param array $cacheMapping
-     *
-     * @return array
-     */
-    private function cacheToArray(
-        $cacheMapping
-    ) {
-        $region =
-            isset($cacheMapping['region']) ? (string)$cacheMapping['region']
-                : null;
-        $usage  =
-            isset($cacheMapping['usage']) ? strtoupper($cacheMapping['usage'])
-                : null;
-        if ($usage
-            && ! defined(
-                'Doctrine\ORM\Mapping\ClassMetadata::CACHE_USAGE_'
-                . $usage
-            )
-        ) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Invalid cache usage "%s"',
-                    $usage
-                )
-            );
-        }
-        if ($usage) {
-            $usage = constant(
-                'Doctrine\ORM\Mapping\ClassMetadata::CACHE_USAGE_'
-                . $usage
-            );
-        }
-        return [
-            'usage' => $usage,
-            'region' => $region,
-        ];
     }
 }

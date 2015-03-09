@@ -12,6 +12,9 @@ use InvalidArgumentException;
  */
 class OneToOneEvaluator implements EvaluatorInterface
 {
+    use JoinColumnToArrayTrait;
+    use CacheToArrayTrait;
+
     /**
      * @param array             $element
      * @param ClassMetadataInfo $metadata
@@ -90,98 +93,5 @@ class OneToOneEvaluator implements EvaluatorInterface
                 );
             }
         }
-    }
-
-    /**
-     * Constructs a joinColumn mapping array based on the information
-     * found in the given join column element.
-     *
-     * @param array $joinColumnElement The array join column element.
-     *
-     * @return array The mapping array.
-     */
-    private function joinColumnToArray(
-        array $joinColumnElement
-    ) {
-        $joinColumn = [];
-
-        if (isset($joinColumnElement['referencedColumnName'])) {
-            $joinColumn['referencedColumnName'] =
-                (string)$joinColumnElement['referencedColumnName'];
-        }
-
-        if (isset($joinColumnElement['name'])) {
-            $joinColumn['name'] = (string)$joinColumnElement['name'];
-        }
-
-        if (isset($joinColumnElement['fieldName'])) {
-            $joinColumn['fieldName'] = (string)$joinColumnElement['fieldName'];
-        }
-
-        if (isset($joinColumnElement['unique'])) {
-            $joinColumn['unique'] = (bool)$joinColumnElement['unique'];
-        }
-
-        if (isset($joinColumnElement['nullable'])) {
-            $joinColumn['nullable'] = (bool)$joinColumnElement['nullable'];
-        }
-
-        if (isset($joinColumnElement['onDelete'])) {
-            $joinColumn['onDelete'] = $joinColumnElement['onDelete'];
-        }
-
-        if (isset($joinColumnElement['columnDefinition'])) {
-            $joinColumn['columnDefinition'] =
-                $joinColumnElement['columnDefinition'];
-        }
-
-        return $joinColumn;
-    }
-
-    /**
-     * Parse / Normalize the cache configuration
-     *
-     * @param array $cacheMapping
-     *
-     * @return array
-     */
-    private function cacheToArray(
-        $cacheMapping
-    ) {
-        $region = null;
-        $usage  = null;
-
-        if (isset($cacheMapping['region'])) {
-            $region = (string)$cacheMapping['region'];
-        }
-
-        if (isset($cacheMapping['usage'])) {
-            $usage = (string)$cacheMapping['usage'];
-        }
-
-        if ($usage && ! defined(
-                'Doctrine\ORM\Mapping\ClassMetadata::CACHE_USAGE_'
-                . $usage
-            )
-        ) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Invalid cache usage "%s"',
-                    $usage
-                )
-            );
-        }
-
-        if ($usage) {
-            $usage = constant(
-                'Doctrine\ORM\Mapping\ClassMetadata::CACHE_USAGE_'
-                . $usage
-            );
-        }
-
-        return [
-            'usage' => $usage,
-            'region' => $region,
-        ];
     }
 }
